@@ -4,7 +4,7 @@ using System.Collections.Generic;
 [Serializable]
 public class Root
 {
-    //public bool theme;
+    public bool onBoarding;
     public List<Properties> properties = new List<Properties>();
 }
 

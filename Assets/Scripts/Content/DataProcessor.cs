@@ -10,11 +10,13 @@ public class DataProcessor : MonoBehaviour
     {
         Instance = this;
     }
+    [SerializeField] private GameObject onBoarding;
     public void LoadData(Root data)
     {
         allData = data;
         SpawnManager.Instance.SpawnAllPlates();
         GetComponent<ThemeChanger>().ChangeBG(true);
+        if (allData.onBoarding) onBoarding.SetActive(false);
 
     }
 

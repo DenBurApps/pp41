@@ -18,6 +18,11 @@ public class Parser : MonoBehaviour
 
         StartCoroutine(LoadAllData());
     }
+    public void ChangeOnBoardingState()
+    {
+        GetComponent<DataProcessor>().allData.onBoarding = true;
+        StartSave();
+    }
     public IEnumerator LoadAllData()
     {
         var processor = GetComponent<DataProcessor>();

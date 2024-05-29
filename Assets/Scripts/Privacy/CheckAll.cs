@@ -17,6 +17,7 @@ public class CheckAll : MonoBehaviour
 
     private void Awake()
     {
+        OpenRateUsOnAwake.RateUs();
         StartLoading();
     }
     private void StartLoading()

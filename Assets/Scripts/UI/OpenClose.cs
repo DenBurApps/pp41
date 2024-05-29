@@ -5,15 +5,14 @@ using UnityEngine.UI;
 
 public class OpenClose : MonoBehaviour
 {
-    private bool state = false;
-    [SerializeField] private GameObject obj;
+    private bool opened = false;
+    [SerializeField] private GameObject openGO;
     private void Awake()
     {
         GetComponent<Button>().onClick.AddListener(() =>
         {
-            state = !state;
-            obj.SetActive(state);
+            opened = !opened;
+            openGO.SetActive(opened);
         });
     }
-
 }

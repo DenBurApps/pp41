@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,65 +5,87 @@ using UnityEngine.UI;
 public class BasePlate : MonoBehaviour
 {
     public Properties properties;
+
     [SerializeField] private TextMeshProUGUI nameTMP;
-    [SerializeField] private protected TextMeshProUGUI infoTMP;
-    [SerializeField] private protected Image plateImage;
-    private protected CreatePlateData plateEditor;
-    private protected GameObject editWindowsParent;
-    public virtual void Init(Properties props,CreatePlateData plateEditor, GameObject editWindowsParent)
+    [SerializeField] private TextMeshProUGUI descriptionTMP;
+    [SerializeField] private TextMeshProUGUI dateAndTimeTMP;
+
+    [SerializeField] private GameObject dateTag;
+    [SerializeField] private GameObject checkTag;
+    [SerializeField] private GameObject photoTag;
+
+    public GameObject hiddenObj;
+
+    [SerializeField] private Preview preview;
+    private Transform previewSpawnPlace;
+    private PlatePinCodeController pinCodeController;
+    public void Init(Properties props,Transform previewSpawnPlace, PlatePinCodeController platePinCodeController)
     {
         properties = props;
-        if (properties.name != "")
-            nameTMP.text = properties.name;
-        else nameTMP.text = properties.tag;
+        this.previewSpawnPlace = previewSpawnPlace;
+        pinCodeController = platePinCodeController;
 
-        infoTMP.text = properties.info1;
+        nameTMP.text = props.Name;
+        nameTMP.gameObject.GetComponent<TruncateText>().Truncate();
 
-        this.editWindowsParent = editWindowsParent;
-        this.plateEditor = plateEditor;
+        descriptionTMP.text = props.Description;
+        descriptionTMP.gameObject.GetComponent<TruncateText>().Truncate();
 
-        Color color;
-        ColorUtility.TryParseHtmlString(properties.textColor, out color);
+        dateAndTimeTMP.text = props.Date + "\n" + props.Time;
 
-        nameTMP.color = color;
-        ColorUtility.TryParseHtmlString(properties.plateColor, out color);
-        plateImage.color = color;
-
-        if(properties.favorite)
+        CheckTags();
+        var plateButton = GetComponent<Button>();
+        if (props.Password != "")
         {
-            unFavButton.gameObject.SetActive(true);
-            favButton.gameObject.SetActive(false);
+            hiddenObj.SetActive(true);
+            plateButton.onClick.AddListener(() => {
+                pinCodeController.plate = this;
+                pinCodeController.ClearInput();
+                pinCodeController.gameObject.SetActive(true);
+            });
         }
-        unFavButton.onClick.AddListener(() =>
+        else
         {
-            SetFavorite(false);
-        });
-        favButton.onClick.AddListener(() =>
+            hiddenObj.SetActive(false);
+            plateButton.onClick.AddListener(OpenPreview);
+        }
+    }
+    [SerializeField] private GameObject tagsHolder;
+    private void CheckTags()
+    {
+        bool DisableTagsHolder = true;
+        if(properties.Date != "")
         {
-            SetFavorite(true);
-        });
+            DisableTagsHolder = false;
+            dateTag.SetActive(true);
+        }
+        else
+            dateTag.SetActive(false);
+
+        if(properties.CheckList.Count > 0)
+        {
+            DisableTagsHolder = false;
+            checkTag.SetActive(true);
+        }
+        else
+            checkTag.SetActive(false);
+
+        if(properties.Photoes.Count > 0)
+        {
+            DisableTagsHolder = false;
+            photoTag.SetActive(true);
+        }
+        else 
+            photoTag.SetActive(false);
+
+        if (DisableTagsHolder)
+            tagsHolder.SetActive(false);
+        else 
+            tagsHolder.SetActive(true);
     }
-
-    public virtual void OpenEditWindow()
+    public void OpenPreview()
     {
-        editWindowsParent.SetActive(true);
-        plateEditor.gameObject.SetActive(true);
-
-        editWindowsParent.GetComponent<Animator>().SetTrigger("Open");
-        plateEditor.OpenEditWindow(properties);
-        if(properties.tag =="Secret")
-            (plateEditor as CreateSecretPlateData).inEdit = true;
-    }
-    [SerializeField] private protected Button favButton;
-    [SerializeField] private protected Button unFavButton;
-
-    protected virtual void SetFavorite(bool fav)
-    {
-        favButton.gameObject.SetActive(!fav);
-        unFavButton.gameObject.SetActive(fav);
-
-        properties.favorite = fav;
-
-        Parser.StartSave();
+        var obj = Instantiate(preview,previewSpawnPlace);
+        obj.Init(properties);
     }
 }

@@ -12,6 +12,7 @@ public class Day : MonoBehaviour
     public DateTime DateTime;
     private Button button;
     private Action<Day> onDayClicked;
+    [SerializeField] private Color choosedColor;
     private void Awake()
     {
         button = GetComponent<Button>();
@@ -60,12 +61,12 @@ public class Day : MonoBehaviour
         {
             if (today)
             {
-                mainImage.color = Color.black;
+                mainImage.color = choosedColor;
                 todayDay.SetActive(false);
             }
             else
             {
-                mainImage.color = Color.black;
+                mainImage.color = choosedColor;
                 todayDay.SetActive(false);
             }
             gameObject.GetComponentInChildren<TextMeshProUGUI>().color = Color.white;

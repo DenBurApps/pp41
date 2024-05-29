@@ -8,7 +8,7 @@ using System.Linq;
 
 public class Calendar : MonoBehaviour
 {
-    public List<Day> days = new List<Day>();
+    [SerializeField] private List<Day> days = new List<Day>();
 
     public Transform grid;
 
@@ -27,11 +27,7 @@ public class Calendar : MonoBehaviour
         choosedDays = new DateTime[maxChoosedDays];
         UpdateCalendar(DateTime.Now.Year, DateTime.Now.Month);
     }
-    public void DisableAllDays()
-    {
-        foreach(Day day in days)
-            day.gameObject.GetComponent<Button>().interactable = false;
-    }
+
     public void UpdateCalendar(int year, int month)
     {
         DateTime temp = new DateTime(year, month, 1);
